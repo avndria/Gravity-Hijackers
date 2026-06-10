@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://8ka2ui7sq36p" path="res://addons/kenney_particle_pack/circle_05.png" id="3_hbot1"]
 [ext_resource type="PackedScene" uid="uid://5k1o5ctvtah6" path="res://scenes/enemy.tscn" id="3_nule3"]
 [ext_resource type="AudioStream" uid="uid://bx2vjggij13yq" path="res://assets/sound/theme finished-ish.mp3" id="6_7nwna"]
+[ext_resource type="PackedScene" uid="uid://qgmqc0w6qru6" path="res://scenes/Sliding doors.tscn" id="7_t8p5d"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_7nwna"]
 panorama = ExtResource("2_myy55")
@@ -158,6 +159,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.37200165, 0.28874588, 0.66
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=658871929]
 stream = ExtResource("6_7nwna")
 volume_db = -10.0
+
+[node name="SlidingDoors" parent="." unique_id=2083297842 instance=ExtResource("7_t8p5d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 2, 19)
 
 [connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/SinglePlayer" to="." method="_on_single_player_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
