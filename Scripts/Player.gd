@@ -9,6 +9,7 @@ signal health_changed(health_value)
 @onready var muzzle_flash = $Camera3D/Pistol/MuzzleFlash
 @onready var raycast = $Camera3D/RayCast3D
 @onready var camera_3d: Camera3D = $Camera3D
+@onready var crosshair = Global.worldNode.hud.get_node("Crosshair")
 
 #Preloads
 @onready var damage_billboard = preload("res://scenes/DamageIndicator.tscn")
@@ -24,10 +25,11 @@ signal health_changed(health_value)
 @onready var gravity_multiplier = 2
 @onready var speed_pickup_multiplier = 1
 
-#Animation
+#Crouching
 var Crouchstate : bool = false
 @export var ANIMATIONPLAYER : AnimationPlayer
 @export_range(5, 10, 0.1) var CROUCH_SPEED : float = 7.0
+@export var is_crouching: bool = false
 
 #Instantiation
 @onready var player_scene_instantiated = player_scene.instantiate()
@@ -52,15 +54,12 @@ const LOOK_SPEED = 5 #Existed since the begginning, Charles is scared to remove 
 func _enter_tree(): #Starts the game, gives multiplayer authority for your controls
 	set_multiplayer_authority(str(name).to_int())
 
-
 func _ready(): #Plays on first entering the game
 	speed_pickup_scene_instantiated.speed_pickup_pickedup.connect(_on_speed_pickup_pickedup) #WIP, TALK TO JAYDAN
 	if not is_multiplayer_authority(): return
 	
-	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED #Allows you to move camera
 	camera.current = true
-	
 
 func _exit_tree() -> void: #for when you leave the actual game for the main menu (Can't actually do this yet)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -97,8 +96,8 @@ func _unhandled_input(event):
 			var new_hit_marker = hit_marker.instantiate()
 			Global.worldNode.get_node("CanvasLayer/HUD").add_child(new_hit_marker)
 			new_hit_marker.position = Vector2(
-				(get_viewport().size.x / 2) - (new_hit_marker.size.x / 2), 
-				(get_viewport().size.y / 2) - (new_hit_marker.size.y / 2)
+				crosshair.position.x - (new_hit_marker.size.x / 2), 
+				crosshair.position.y - (new_hit_marker.size.y / 2)
 			)
 			new_hit_marker.scale = Vector2(0.5, 0.5)
 			# instance new damage count billboard gui where ray collides
@@ -252,9 +251,9 @@ func _Y_on_mouse_sens_updated(value):
 func upd_ammo(num: int, reload: bool = false):
 	if reload:
 		reloading = true
-		Global.worldNode.hud.get_node("Crosshair").hide()
+		crosshair.hide()
 		await get_tree().create_timer(1).timeout
-		Global.worldNode.hud.get_node("Crosshair").show()
+		crosshair.show()
 		ammo_count = 15
 		reloading = false
 	else:
